@@ -6,6 +6,48 @@ using namespace std;
 
 typedef vector<vector<double>> Matriz;
 
+void imprimirMatriz(const Matriz& matriz);
+Matriz matrizIdentidad(int n);
+Matriz multiplicarMatrices(const Matriz& matriz1, const Matriz& matriz2);
+void intercambiarFilas(Matriz& matriz, int fila1, int fila2);
+void multiplicarFila(Matriz& matriz, int fila, double escalar);
+void sumarFilas(Matriz& matriz, int filaObjetivo, int filaFuente, double escalar);
+Matriz inversaGaussJordan(Matriz matriz);
+
+
+
+int main() {
+    int tamano;
+    cout << "Ingrese el tamano de la matriz (maximo 5): ";
+    cin >> tamano;
+
+    if (tamano < 1 || tamano > 5) {
+        cout << "Tamano no valido. Debe estar entre 1 y 5." << endl;
+        return 1;
+    }
+
+    Matriz matriz(tamano, vector<double>(tamano, 0.0));
+
+    cout << "Ingrese los elementos de la matriz:" << endl;
+
+    for (int i = 0; i < tamano; ++i) {
+        for (int j = 0; j < tamano; ++j) {
+            cout << "Ingrese el elemento en la posicion [" << i + 1 << "][" << j + 1 << "]: ";
+            cin >> matriz[i][j];
+        }
+    }
+
+    cout << "\nMatriz Original:" << endl;
+    imprimirMatriz(matriz);
+
+    Matriz matrizInversa = inversaGaussJordan(matriz);
+
+    cout << "\nMatriz Inversa:" << endl;
+    imprimirMatriz(matrizInversa);
+
+    return 0;
+}
+
 void imprimirMatriz(const Matriz& matriz) {
     for (const auto& fila : matriz) {
         for (const auto& elemento : fila) {
@@ -42,7 +84,7 @@ Matriz multiplicarMatrices(const Matriz& matriz1, const Matriz& matriz2) {
     return resultado;
 }
 
-// Funciones para operaciones basicas de filas
+// Operaciones Basicas
 void intercambiarFilas(Matriz& matriz, int fila1, int fila2) {
     swap(matriz[fila1], matriz[fila2]);
 }
@@ -64,12 +106,10 @@ Matriz inversaGaussJordan(Matriz matriz) {
     Matriz matrizInversa = matrizIdentidad(n);
 
     for (int i = 0; i < n; ++i) {
-        // Hacer el pivote de la fila i igual a 1
         double pivote = matriz[i][i];
         multiplicarFila(matriz, i, 1 / pivote);
         multiplicarFila(matrizInversa, i, 1 / pivote);
 
-        // Eliminacion hacia adelante
         for (int j = 0; j < n; ++j) {
             if (i != j) {
                 double factor = matriz[j][i];
@@ -80,36 +120,4 @@ Matriz inversaGaussJordan(Matriz matriz) {
     }
 
     return matrizInversa;
-}
-
-int main() {
-    int tamano;
-    cout << "Ingrese el tamano de la matriz (maximo 5): ";
-    cin >> tamano;
-
-    if (tamano < 1 || tamano > 5) {
-        cout << "Tamano no valido. Debe estar entre 1 y 5." << endl;
-        return 1;
-    }
-
-    Matriz matriz(tamano, vector<double>(tamano, 0.0));
-
-    cout << "Ingrese los elementos de la matriz:" << endl;
-
-    for (int i = 0; i < tamano; ++i) {
-        for (int j = 0; j < tamano; ++j) {
-            cout << "Ingrese el elemento en la posicion [" << i + 1 << "][" << j + 1 << "]: ";
-            cin >> matriz[i][j];
-        }
-    }
-
-    cout << "\nMatriz Original:" << endl;
-    imprimirMatriz(matriz);
-
-    Matriz matrizInversa = inversaGaussJordan(matriz);
-
-    cout << "\nMatriz Inversa:" << endl;
-    imprimirMatriz(matrizInversa);
-
-    return 0;
 }

@@ -1,7 +1,7 @@
 ﻿  Matriz Inversa Calculadora.cpp
-C:\Users\torre\source\repos\Matriz Inversa Calculadora\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(27,16): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
-C:\Users\torre\source\repos\Matriz Inversa Calculadora\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(28,19): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
-C:\Users\torre\source\repos\Matriz Inversa Calculadora\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(29,16): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
-C:\Users\torre\source\repos\Matriz Inversa Calculadora\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(30,19): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
-C:\Users\torre\source\repos\Matriz Inversa Calculadora\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(63,11): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
-  Matriz Inversa Calculadora.vcxproj -> C:\Users\torre\source\repos\Matriz Inversa Calculadora\x64\Debug\Matriz Inversa Calculadora.exe
+C:\Users\torre\OneDrive\Documentos\GitHub\Calculadora-Matriz-Inversa\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(69,16): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\torre\OneDrive\Documentos\GitHub\Calculadora-Matriz-Inversa\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(70,19): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\torre\OneDrive\Documentos\GitHub\Calculadora-Matriz-Inversa\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(71,16): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\torre\OneDrive\Documentos\GitHub\Calculadora-Matriz-Inversa\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(72,19): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\torre\OneDrive\Documentos\GitHub\Calculadora-Matriz-Inversa\Matriz Inversa Calculadora\Matriz Inversa Calculadora.cpp(105,11): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+  Matriz Inversa Calculadora.vcxproj -> C:\Users\torre\OneDrive\Documentos\GitHub\Calculadora-Matriz-Inversa\x64\Debug\Matriz Inversa Calculadora.exe
