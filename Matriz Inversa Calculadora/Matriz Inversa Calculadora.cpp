@@ -8,8 +8,6 @@ typedef vector<vector<double>> Matriz;
 
 void imprimirMatriz(const Matriz& matriz);
 Matriz matrizIdentidad(int n);
-Matriz multiplicarMatrices(const Matriz& matriz1, const Matriz& matriz2);
-void intercambiarFilas(Matriz& matriz, int fila1, int fila2);
 void multiplicarFila(Matriz& matriz, int fila, double escalar);
 void sumarFilas(Matriz& matriz, int filaObjetivo, int filaFuente, double escalar);
 Matriz inversaGaussJordan(Matriz matriz);
@@ -65,29 +63,8 @@ Matriz matrizIdentidad(int n) {
     return identidad;
 }
 
-Matriz multiplicarMatrices(const Matriz& matriz1, const Matriz& matriz2) {
-    int filas1 = matriz1.size();
-    int columnas1 = matriz1[0].size();
-    int filas2 = matriz2.size();
-    int columnas2 = matriz2[0].size();
-
-    Matriz resultado(filas1, vector<double>(columnas2, 0.0));
-
-    for (int i = 0; i < filas1; ++i) {
-        for (int j = 0; j < columnas2; ++j) {
-            for (int k = 0; k < columnas1; ++k) {
-                resultado[i][j] += matriz1[i][k] * matriz2[k][j];
-            }
-        }
-    }
-
-    return resultado;
-}
 
 // Operaciones Basicas
-void intercambiarFilas(Matriz& matriz, int fila1, int fila2) {
-    swap(matriz[fila1], matriz[fila2]);
-}
 
 void multiplicarFila(Matriz& matriz, int fila, double escalar) {
     for (double& elemento : matriz[fila]) {
