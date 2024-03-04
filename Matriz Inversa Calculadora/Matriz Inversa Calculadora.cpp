@@ -5,14 +5,14 @@
 using namespace std;
 
 typedef vector<vector<double>> Matriz;
+typedef vector<double> Vector;
 
 void imprimirMatriz(const Matriz& matriz);
 Matriz matrizIdentidad(int n);
 void multiplicarFila(Matriz& matriz, int fila, double escalar);
 void sumarFilas(Matriz& matriz, int filaObjetivo, int filaFuente, double escalar);
 Matriz inversaGaussJordan(Matriz matriz);
-
-
+Vector multiplicarMatrizPorVector(const Matriz& matriz, const Vector& vector);
 
 int main() {
     int tamano;
@@ -43,6 +43,22 @@ int main() {
     cout << "\nMatriz Inversa:" << endl;
     imprimirMatriz(matrizInversa);
 
+    Vector vectorB(tamano);
+
+    cout << "\nIngrese los elementos del vector B:" << endl;
+    for (int i = 0; i < tamano; ++i) {
+        cout << "Ingrese el elemento en la posicion [" << i + 1 << "]: ";
+        cin >> vectorB[i];
+    }
+
+    // Resolver el sistema de ecuaciones Ax = B
+    Vector solucionX = multiplicarMatrizPorVector(matrizInversa, vectorB);
+
+    cout << "\nLa solucion del sistema de ecuaciones Ax = B es:\n";
+    for (int i = 0; i < tamano; ++i) {
+        cout << "x[" << i + 1 << "] = " << solucionX[i] << "\n";
+    }
+
     return 0;
 }
 
@@ -62,9 +78,6 @@ Matriz matrizIdentidad(int n) {
     }
     return identidad;
 }
-
-
-// Operaciones Basicas
 
 void multiplicarFila(Matriz& matriz, int fila, double escalar) {
     for (double& elemento : matriz[fila]) {
@@ -97,4 +110,19 @@ Matriz inversaGaussJordan(Matriz matriz) {
     }
 
     return matrizInversa;
+}
+
+Vector multiplicarMatrizPorVector(const Matriz& matriz, const Vector& vector) {
+    int filas = matriz.size();
+    int columnas = matriz[0].size();
+
+    Vector resultado(filas, 0.0);
+
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            resultado[i] += matriz[i][j] * vector[j];
+        }
+    }
+
+    return resultado;
 }
