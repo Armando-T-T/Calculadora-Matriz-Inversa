@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -97,6 +98,10 @@ Matriz inversaGaussJordan(Matriz matriz) {
 
     for (int i = 0; i < n; ++i) {
         double pivote = matriz[i][i];
+        if (pivote == 0.0) {
+            cout << "No existe matriz inversa" << endl;
+            exit(EXIT_SUCCESS);
+        }
         multiplicarFila(matriz, i, 1 / pivote);
         multiplicarFila(matrizInversa, i, 1 / pivote);
 
