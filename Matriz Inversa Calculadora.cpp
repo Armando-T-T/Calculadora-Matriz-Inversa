@@ -152,8 +152,7 @@ double determinante(const Matriz& matriz) {
 
         // Construir submatriz eliminando la fila 0 y columna i
         for (int j = 1; j < n; ++j) {
-            int l = 0;
-            for (int k = 0; k < n; ++k) {
+            for (int k = 0, l = 0; k < n; ++k) {
                 if (k != i) {
                     submatriz[j - 1][l++] = matriz[j][k];
                 }
