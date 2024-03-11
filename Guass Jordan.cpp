@@ -1,7 +1,6 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include <cstdlib>
 
 using namespace std;
 
@@ -14,6 +13,7 @@ void multiplicarFila(Matriz& matriz, int fila, double escalar);
 void sumarFilas(Matriz& matriz, int filaObjetivo, int filaFuente, double escalar);
 Matriz inversaGaussJordan(Matriz matriz);
 Vector multiplicarMatrizPorVector(const Matriz& matriz, const Vector& vector);
+double determinante(const Matriz& matriz);
 
 int main() {
     int tamano;
@@ -38,6 +38,14 @@ int main() {
 
     cout << "\nMatriz Original:" << endl;
     imprimirMatriz(matriz);
+
+    if (determinante(matriz) == 0.0) {
+        cout << "\nLa matriz no tiene inversa." << endl;
+        return 1;
+    }
+    else {
+        cout << "\nLa matriz si tiene inversa." << endl;
+    }
 
     Matriz matrizInversa = inversaGaussJordan(matriz);
 
@@ -98,10 +106,7 @@ Matriz inversaGaussJordan(Matriz matriz) {
 
     for (int i = 0; i < n; ++i) {
         double pivote = matriz[i][i];
-        if (pivote == 0.0) {
-            cout << "No existe matriz inversa" << endl;
-            exit(EXIT_SUCCESS);
-        }
+
         multiplicarFila(matriz, i, 1 / pivote);
         multiplicarFila(matrizInversa, i, 1 / pivote);
 
@@ -130,4 +135,37 @@ Vector multiplicarMatrizPorVector(const Matriz& matriz, const Vector& vector) {
     }
 
     return resultado;
+}
+
+double determinante(const Matriz& matriz) {
+    int n = matriz.size();
+
+    // Caso base: matriz 1x1
+    if (n == 1) {
+        return matriz[0][0];
+    }
+
+    double det = 0.0;
+
+    for (int i = 0; i < n; ++i) {
+        Matriz submatriz(n - 1, vector<double>(n - 1, 0.0));
+
+        // Construir submatriz eliminando la fila 0 y columna i
+        for (int j = 1; j < n; ++j) {
+            for (int k = 0, l = 0; k < n; ++k) {
+                if (k != i) {
+                    submatriz[j - 1][l++] = matriz[j][k];
+                }
+            }
+        }
+        // Determinante es la suma de los cofactores
+        if (i % 2 == 0) {
+            det += matriz[0][i] * determinante(submatriz);
+        }
+        else {
+            det -= matriz[0][i] * determinante(submatriz);
+        }
+    }
+
+    return det;
 }
