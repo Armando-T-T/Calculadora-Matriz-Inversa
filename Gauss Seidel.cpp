@@ -38,7 +38,7 @@ int main() {
     imprimirMatriz(matriz);
 
     if (!verificarDiagonalDominante(matriz)) {
-        cout << "\nLa matriz no es diagonal dominante. El método de Gauss-Seidel podría no converger correctamente." << endl;
+        cout << "\nLa matriz no es diagonal dominante. El metodo de Gauss-Seidel podria no converger correctamente." << endl;
         return 1;
     }
 
@@ -51,7 +51,7 @@ int main() {
     }
 
     int iteraciones;
-    cout << "\nIngrese la cantidad de iteraciones para el método de Gauss-Seidel: ";
+    cout << "\nIngrese la cantidad de iteraciones para el metodo de Gauss-Seidel: ";
     cin >> iteraciones;
 
     // Resolver el sistema de ecuaciones Ax = B usando Gauss-Seidel
