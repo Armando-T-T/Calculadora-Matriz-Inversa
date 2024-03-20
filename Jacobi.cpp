@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -9,7 +10,8 @@ typedef vector<double> Vector;
 
 void imprimirMatriz(const Matriz& matriz);
 Vector resolverSistemaJacobi(const Matriz& A, const Vector& B, int iteraciones);
-double determinante(const Matriz& matriz);
+bool verificarDiagonalDominante(const Matriz& matriz);
+double calcularError(const Vector& X_ant, const Vector& X_act, Vector& errores);
 
 int main() {
     int tamano;
@@ -44,15 +46,12 @@ int main() {
 
     cout << "\nVector B:" << endl;
     for (const auto& elemento : vectorB) {
-        cout << setw(10) << fixed << setprecision(2) << elemento << "\n";
+        cout << setw(10) << fixed << setprecision(5) << elemento << "\n";
     }
 
-    if (determinante(matrizA) == 0.0) {
-        cout << "\nLa matriz A no tiene inversa." << endl;
+    if (!verificarDiagonalDominante(matrizA)) {
+        cout << "\nLa matriz A no es estrictamente diagonal dominante." << endl;
         return 1;
-    }
-    else {
-        cout << "\nLa matriz A si tiene inversa." << endl;
     }
 
     int numIteraciones;
@@ -63,7 +62,7 @@ int main() {
 
     cout << "\nLa solucion del sistema de ecuaciones Ax = B (metodo Jacobi) es:\n";
     for (int i = 0; i < tamano; ++i) {
-        cout << "x[" << i + 1 << "] = " << solucionX[i] << "\n";
+        cout << "x[" << i + 1 << "] = " << solucionX[i] << endl;
     }
 
     return 0;
@@ -72,7 +71,7 @@ int main() {
 void imprimirMatriz(const Matriz& matriz) {
     for (const auto& fila : matriz) {
         for (const auto& elemento : fila) {
-            cout << setw(10) << fixed << setprecision(2) << elemento << " ";
+            cout << setw(10) << fixed << setprecision(5) << elemento << " ";
         }
         cout << endl;
     }
@@ -80,59 +79,75 @@ void imprimirMatriz(const Matriz& matriz) {
 
 Vector resolverSistemaJacobi(const Matriz& A, const Vector& B, int iteraciones) {
     int tamano = A.size();
-    Vector X(tamano, 0.0);  
+    Vector X(tamano, 0.0);
+
+    Vector X_ant(tamano, 0.0); // Vector para almacenar el valor de X en la iteración anterior
 
     for (int iteracion = 0; iteracion < iteraciones; ++iteracion) {
         Vector nuevoX(tamano, 0.0);
+        Vector errores(tamano, 0.0);
 
         for (int i = 0; i < tamano; ++i) {
             double suma = 0.0;
 
             for (int j = 0; j < tamano; ++j) {
                 if (i != j) {
-                    suma += A[i][j] * X[j];
+                    suma += A[i][j] * X_ant[j];
                 }
             }
 
             nuevoX[i] = (B[i] - suma) / A[i][i];
         }
 
-        X = nuevoX;  
+        double error_total = calcularError(X, nuevoX, errores);
+
+        cout << "Iteracion " << iteracion + 1 << ":" << endl;
+        for (int i = 0; i < tamano; ++i) {
+            cout << "x[" << i + 1 << "] = " << nuevoX[i] << ", Error Relativo: " << errores[i] << endl;
+        }
+        cout << "Error Total: " << error_total << endl << endl;
+
+        X_ant = X; // Actualizar el valor de X para la siguiente iteración
+        X = nuevoX;
     }
 
     return X;
 }
 
-double determinante(const Matriz& matriz) {
+bool verificarDiagonalDominante(const Matriz& matriz) {
     int n = matriz.size();
 
-    // Caso base: matriz 1x1
-    if (n == 1) {
-        return matriz[0][0];
-    }
-
-    double det = 0.0;
-
     for (int i = 0; i < n; ++i) {
-        Matriz submatriz(n - 1, vector<double>(n - 1, 0.0));
+        double sumaFilas = 0.0;
+        double sumaColumnas = 0.0;
 
-        // Construir submatriz eliminando la fila 0 y columna i
-        for (int j = 1; j < n; ++j) {
-            for (int k = 0, l = 0; k < n; ++k) {
-                if (k != i) {
-                    submatriz[j - 1][l++] = matriz[j][k];
-                }
+        for (int j = 0; j < n; ++j) {
+            if (j != i) {
+                sumaFilas += abs(matriz[i][j]);
+                sumaColumnas += abs(matriz[j][i]);
             }
         }
 
-        // Determinante es la suma de los cofactores
-        if (i % 2 == 0) {
-            det += matriz[0][i] * determinante(submatriz);
-        }
-        else {
-            det -= matriz[0][i] * determinante(submatriz);
+        if (abs(matriz[i][i]) < sumaFilas || abs(matriz[i][i]) < sumaColumnas) {
+            return false; // No es estrictamente diagonal dominante
         }
     }
 
-    return det;
+    return true; // Es estrictamente diagonal dominante
+}
+
+double calcularError(const Vector& X_ant, const Vector& X_act, Vector& errores) {
+    int tamano = X_ant.size();
+    double max_error = 0.0;
+    double error_total = 0.0;
+
+    for (int i = 0; i < tamano; ++i) {
+        errores[i] = abs((X_ant[i] - X_act[i]) / X_act[i]);
+        error_total += errores[i];
+        if (errores[i] > max_error) {
+            max_error = errores[i];
+        }
+    }
+
+    return error_total;
 }
