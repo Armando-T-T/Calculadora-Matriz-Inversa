@@ -12,6 +12,8 @@ void imprimirMatriz(const Matriz& matriz);
 void imprimirVector(const Vector& vector);
 bool verificarDiagonalDominante(const Matriz& matriz);
 Vector resolverSistemaGaussSeidel(const Matriz& matrizA, const Vector& vectorB, int iteraciones);
+Vector resolverSistemaJacobi(const Matriz& A, const Vector& B, int iteraciones);
+double calcularError(const Vector& X_ant, const Vector& X_act);
 
 int main() {
     int tamano;
@@ -23,22 +25,22 @@ int main() {
         return 1;
     }
 
-    Matriz matriz(tamano, vector<double>(tamano, 0.0));
+    Matriz matrizA(tamano, vector<double>(tamano, 0.0));
 
-    cout << "Ingrese los elementos de la matriz:" << endl;
+    cout << "Ingrese los elementos de la matriz A:" << endl;
 
     for (int i = 0; i < tamano; ++i) {
         for (int j = 0; j < tamano; ++j) {
             cout << "Ingrese el elemento en la posicion [" << i + 1 << "][" << j + 1 << "]: ";
-            cin >> matriz[i][j];
+            cin >> matrizA[i][j];
         }
     }
 
-    cout << "\nMatriz Original:" << endl;
-    imprimirMatriz(matriz);
+    cout << "\nMatriz A:" << endl;
+    imprimirMatriz(matrizA);
 
-    if (!verificarDiagonalDominante(matriz)) {
-        cout << "\nLa matriz no es diagonal dominante. El metodo de Gauss-Seidel podria no converger correctamente." << endl;
+    if (!verificarDiagonalDominante(matrizA)) {
+        cout << "\nLa matriz A no es estrictamente diagonal dominante. Los métodos de Jacobi y Gauss-Seidel podrían no converger correctamente." << endl;
         return 1;
     }
 
@@ -50,15 +52,23 @@ int main() {
         cin >> vectorB[i];
     }
 
-    int iteraciones;
-    cout << "\nIngrese la cantidad de iteraciones para el metodo de Gauss-Seidel: ";
-    cin >> iteraciones;
+    int numIteraciones;
+    cout << "\nIngrese la cantidad de iteraciones para los métodos de Jacobi y Gauss-Seidel: ";
+    cin >> numIteraciones;
 
-    // Resolver el sistema de ecuaciones Ax = B usando Gauss-Seidel
-    Vector solucionX = resolverSistemaGaussSeidel(matriz, vectorB, iteraciones);
+    // Resolver el sistema de ecuaciones Ax = B usando el método de Jacobi
+    cout << "\nMétodo de Jacobi:" << endl;
+    Vector solucionJacobi = resolverSistemaJacobi(matrizA, vectorB, numIteraciones);
 
-    cout << "\nLa solucion del sistema de ecuaciones Ax = B es:\n";
-    imprimirVector(solucionX);
+    cout << "\nLa solucion del sistema de ecuaciones Ax = B (metodo Jacobi) es:\n";
+    imprimirVector(solucionJacobi);
+
+    // Resolver el sistema de ecuaciones Ax = B usando el método de Gauss-Seidel
+    cout << "\nMétodo de Gauss-Seidel:" << endl;
+    Vector solucionGaussSeidel = resolverSistemaGaussSeidel(matrizA, vectorB, numIteraciones);
+
+    cout << "\nLa solucion del sistema de ecuaciones Ax = B (metodo Gauss-Seidel) es:\n";
+    imprimirVector(solucionGaussSeidel);
 
     return 0;
 }
@@ -100,6 +110,47 @@ bool verificarDiagonalDominante(const Matriz& matriz) {
     return true; // Es estrictamente diagonal dominante
 }
 
+Vector resolverSistemaJacobi(const Matriz& A, const Vector& B, int iteraciones) {
+    int tamano = A.size();
+    Vector X(tamano, 0.0);
+
+    Vector X_ant(tamano, 0.0); // Vector para almacenar el valor de X en la iteración anterior
+
+    for (int iteracion = 0; iteracion < iteraciones; ++iteracion) {
+        Vector nuevoX(tamano, 0.0);
+        Vector errores(tamano, 0.0);
+        double error_total = 0.0;
+
+        for (int i = 0; i < tamano; ++i) {
+            double suma = 0.0;
+
+            for (int j = 0; j < tamano; ++j) {
+                if (i != j) {
+                    suma += A[i][j] * X_ant[j];
+                }
+            }
+
+            nuevoX[i] = (B[i] - suma) / A[i][i];
+        }
+
+        for (int i = 0; i < tamano; ++i) {
+            errores[i] = abs((X[i] - nuevoX[i]) / nuevoX[i]);
+            error_total += errores[i];
+        }
+
+        cout << "Iteracion " << iteracion + 1 << ":" << endl;
+        for (int i = 0; i < tamano; ++i) {
+            cout << "x[" << i + 1 << "] = " << nuevoX[i] << ", Error Relativo: " << errores[i] << endl;
+        }
+        cout << "Error Total: " << error_total << endl << endl;
+
+        X_ant = X; // Actualizar el valor de X para la siguiente iteración
+        X = nuevoX;
+    }
+
+    return X;
+}
+
 Vector resolverSistemaGaussSeidel(const Matriz& matrizA, const Vector& vectorB, int iteraciones) {
     int n = matrizA.size();
 
@@ -107,6 +158,8 @@ Vector resolverSistemaGaussSeidel(const Matriz& matrizA, const Vector& vectorB, 
 
     for (int iter = 0; iter < iteraciones; ++iter) {
         Vector xNuevo(x);
+        Vector errores(n, 0.0);
+        double error_total = 0.0;
 
         for (int i = 0; i < n; ++i) {
             double suma = 0.0;
@@ -119,6 +172,17 @@ Vector resolverSistemaGaussSeidel(const Matriz& matrizA, const Vector& vectorB, 
 
             xNuevo[i] = (vectorB[i] - suma) / matrizA[i][i];
         }
+
+        for (int i = 0; i < n; ++i) {
+            errores[i] = abs((x[i] - xNuevo[i]) / xNuevo[i]);
+            error_total += errores[i];
+        }
+
+        cout << "Iteracion " << iter + 1 << ":" << endl;
+        for (int i = 0; i < n; ++i) {
+            cout << "x[" << i + 1 << "] = " << xNuevo[i] << ", Error Relativo: " << errores[i] << endl;
+        }
+        cout << "Error Total: " << error_total << endl << endl;
 
         x = xNuevo;
     }
